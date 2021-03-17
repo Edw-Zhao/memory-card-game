@@ -1,0 +1,219 @@
+<div class="w-100 d-flex flex-column">
+  <div class="stars"></div>
+  <div class="twinkling"></div>
+  <div class="clouds"></div>
+  <div
+    class="gameplay w-100 align-self-center d-flex flex-column"
+    *ngIf="appliedSettings$ | async"
+  >
+    <div class="timerbar w-100">
+      <div
+        class="time"
+        *ngIf="
+          (showCards$ | async) &&
+          (gameState$ | async) &&
+          (gameState$ | async) === 'in progress'
+        "
+        [style.animation-duration]="
+          revealTime((cards$ | async).length, difficulty$ | async) + 's'
+        "
+      ></div>
+      <div
+        class="time"
+        *ngIf="
+          !(showCards$ | async) &&
+          (gameState$ | async) &&
+          (gameState$ | async) === 'in progress'
+        "
+        [style.animation-duration]="
+          gameTime((cards$ | async).length, difficulty$ | async) -
+          revealTime((cards$ | async).length, difficulty$ | async) +
+          's'
+        "
+      ></div>
+    </div>
+    <div class="cards-container w-100 row align-self-center">
+      <div
+        class="card-wrapper"
+        *ngFor="let card of cards$ | async; index as i"
+        [ngClass]="
+          (cards$ | async).length <= 12
+            ? 'col-4 col-sm-4 col-md-3 col-lg-2 col-xl-1'
+            : (cards$ | async).length <= 24
+            ? 'col-3 col-sm-3 col-md-2 col-lg-1'
+            : 'col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1'
+        "
+      >
+        <div
+          class="tarotcard"
+          *ngIf="(showCards$ | async) && (gameState$ | async) !== 'lose'"
+          [style.background-image]="cardImage(card)"
+        ></div>
+        <div
+          class="tarotcard"
+          *ngIf="
+            !(correctCards$ | async).includes(i) &&
+            !(showCards$ | async) &&
+            (gameState$ | async) !== 'lose'
+          "
+          [style.background-image]="
+            ((incorrectPair$ | async).includes(i) &&
+              (hintsArray$ | async).includes(i)) ||
+            (!(incorrectPair$ | async).includes(i) &&
+              (hintsArray$ | async).includes(i)) ||
+            ((incorrectPair$ | async).includes(i) &&
+              !(hintsArray$ | async).includes(i))
+              ? cardImage(card)
+              : hiddenCard()
+          "
+          (click)="selectCard(i)"
+          [style.opacity]="(hintsArray$ | async).includes(i) ? 0.5 : 1"
+          [style.border-color]="
+            (activeCard$ | async) === i ? '#FFD740' : 'black'
+          "
+          [style.animation]="
+            (incorrectPair$ | async).includes(i)
+              ? '0.25s linear incorrect forwards'
+              : '0.1s linear flip-vertical-bck forwards'
+          "
+        ></div>
+        <div
+          class="tarotcard correct"
+          *ngIf="
+            (correctCards$ | async).includes(i) &&
+            (gameState$ | async) !== 'lose'
+          "
+          [style.background-image]="cardImage(card)"
+        ></div>
+        <div
+          class="tarotcard correct"
+          *ngIf="(gameState$ | async) === 'lose'"
+          [style.background-image]="cardImage(card)"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="settings d-flex flex-column align-self-center align-items-center col-10 col-sm-8"
+    style="height: 20%"
+  >
+    <button
+      *ngIf="(gameState$ | async) !== ''"
+      [disabled]="
+        (gameState$ | async) === 'win' ||
+        (gameState$ | async) === 'lose' ||
+        (showCards$ | async)
+      "
+      mat-raised-button
+      color="primary"
+      (click)="getHint()"
+    >
+      Get Hint
+    </button>
+    <p *ngIf="(gameState$ | async) === ''" class="header">Game Rules</p>
+    <p *ngIf="(gameState$ | async) === ''" class="text">
+      All cards will be revealed for a short time period. Afterwards, the cards
+      will be hidden and must be correctly matched within the time period and #
+      of lives. Both reveal and game time periods correspond to the selected
+      difficulty and amount of cards on the field, the timer will be indicated
+      on top. One life will be deducted for every incorrect pair and the pair
+      will stay revealed until another pair are selected. Click the hint button
+      to reveal an unrevealed card.
+    </p>
+    <p *ngIf="(gameState$ | async) !== ''" class="header">Game State</p>
+    <ul *ngIf="(gameState$ | async) !== ''" class="game-state">
+      <li
+        class="list"
+        style="color: #673ab7"
+        [style.color]="
+          (gameState$ | async) === 'in progress'
+            ? '#FFC107'
+            : (gameState$ | async) === 'win'
+            ? 'lightgreen'
+            : 'red'
+        "
+      >
+        Result:
+        {{
+          (gameState$ | async) === "in progress"
+            ? "On-going"
+            : (gameState$ | async) === "win"
+            ? "Victory!"
+            : "Game Over"
+        }}
+      </li>
+      <li class="list">Lives left: {{ triesLeft$ | async }}</li>
+      <li class="list">Hints left: {{ hints$ | async }}</li>
+    </ul>
+
+    <p class="header">Settings</p>
+    <div class="d-flex align-items-center">
+      <form
+        [formGroup]="settingsForm"
+        class="d-flex justify-content-center flex-wrap"
+      >
+        <mat-form-field
+          appearance="outline"
+          class="col-12 col-sm-12 col-lg-2 col-xl-2"
+        >
+          <mat-label>Difficulty</mat-label>
+          <mat-select formControlName="difficulty" required #Difficulty>
+            <mat-option value="Easy">Easy</mat-option>
+            <mat-option value="Normal">Normal</mat-option>
+            <mat-option value="Hard">Hard</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="d-flex col-12 col-lg-4 col-xl-4">
+          <div class="d-flex flex-column slider-label w-100">
+            <p class="text" style="width: 100%; padding-top: 2px"># Cards:</p>
+            <mat-slider
+              appearance="fill"
+              formControlName="number_cards"
+              thumbLabel
+              step="2"
+              min="4"
+              max="48"
+            ></mat-slider>
+          </div>
+        </div>
+        <mat-form-field
+          appearance="outline"
+          class="input-box col-12 col-lg-2 col-xl-2"
+        >
+          <mat-label>Hints</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="hints"
+            #Hints
+            max="20"
+            min="0"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          class="input-box col-12 col-lg-2 col-xl-2"
+        >
+          <mat-label>Lives</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="attempts"
+            #Hints
+            max="20"
+            min="1"
+          />
+        </mat-form-field>
+      </form>
+    </div>
+    <button
+      mat-raised-button
+      [disabled]="showCards$ | async"
+      color="primary"
+      (click)="applySettings()"
+      style="margin: 20px 0; align-self: center; justify-content: center"
+    >
+      {{ (gameState$ | async) === "" ? "Start" : "Apply Settings and Restart" }}
+    </button>
+  </div>
+</div>
