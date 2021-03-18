@@ -8,5 +8,5 @@ This project was an exercise to practice Angular with Typescript and the followi
 
 <a href="https://www.bennionkearny.com/free-tarot-cards/">Tarot Cards</a>
 
-<a href="https://codepen.io/NazarTheVis/pen/zqXMqP">Tarot Cards</a>
+<a href="https://codepen.io/NazarTheVis/pen/zqXMqP">Background</a>
 
