@@ -167,11 +167,11 @@ export class CardWrapperComponent implements OnInit {
   }
 
   cardImage(card: string) {
-    return 'url(../../assets/' + card + '.png)';
+    return 'url(assets/' + card + '.png)';
   }
 
   hiddenCard() {
-    return 'url(../../assets/hiddencard.jpg)';
+    return 'url(assets/hiddencard.jpg)';
   }
 
   selectCard(index: number) {

@@ -79,15 +79,6 @@
 .correct
     animation: 0.25s linear flip-vertical-bck forwards
 
-    &:before
-        content:''
-        position: absolute
-        background-image: none
-        background-repeat: no-repeat
-        background-size: contain
-        background-position: center
-        animation: 0.25s linear hidden-background forwards
-
 .settings
     background: white
     opacity: 0.75
@@ -149,11 +140,8 @@ mat-slider
     font-size: 2.75em
     color: white
     align-self: center
-    margin-top: 20px
     opacity: 0.9
-    margin: 0 0.25em
-
-  
+    margin: 0 0.2em
 
 @keyframes timeload
     0%
@@ -246,22 +234,6 @@ mat-slider
     -webkit-transform: translateZ(-260px) rotateY(-180deg) scaleX(-1)
     transform: translateZ(-260px) rotateY(-180deg) scaleX(-1)
   
-
-@-webkit-keyframes hidden-background  
-  0% 
-     background-image: url(../../assets/hiddencard.jpg)
-  
-  100% 
-    background-image:  none
- 
-
-@keyframes hidden-background 
-  0% 
-     background-image: url(../../assets/hiddencard.jpg)
-
-  100% 
-    background-image:  none
-
   
   
 
