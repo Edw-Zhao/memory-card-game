@@ -216,4 +216,28 @@
       {{ (gameState$ | async) === "" ? "Start" : "Apply Settings and Restart" }}
     </button>
   </div>
+  <p class="info col-10 col-sm-8">
+    This project was an exercise to practice Angular with Typescript and the
+    following coding libraries/frameworks: Redux (NgRx with RxJS), Bootstrap,
+    Angular Material and Sass. Please click the icons below to see my other
+    projects or for my contact information.
+  </p>
+  <div class="info col-10 col-sm-8">
+    <a
+      className="anim-refs"
+      href="https://github.com/Edw-Zhao"
+      target="_blank"
+      rel="noopener noreferrer"
+      color="red"
+    >
+      <fa-icon [icon]="faGithubSquare" class="icons"></fa-icon>
+    </a>
+    <a
+      href="https://www.linkedin.com/in/edward-lu-zhao/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <fa-icon [icon]="faLinkedin" class="icons"></fa-icon>
+    </a>
+  </div>
 </div>

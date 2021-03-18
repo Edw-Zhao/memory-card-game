@@ -11,12 +11,17 @@ import {
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { unshuffleddeck } from './deckarray';
 
+import { faGithubSquare, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+
 @Component({
   selector: 'app-card-wrapper',
   templateUrl: './card-wrapper.component.html',
   styleUrls: ['./card-wrapper.component.sass'],
 })
 export class CardWrapperComponent implements OnInit {
+  faGithubSquare = faGithubSquare;
+  faLinkedin = faLinkedin;
+
   settingsForm: FormGroup;
   difficulty$: Observable<string>;
   cards$: Observable<[]>;
